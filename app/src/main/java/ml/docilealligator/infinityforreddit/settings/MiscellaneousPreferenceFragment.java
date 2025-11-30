@@ -105,12 +105,12 @@ public class MiscellaneousPreferenceFragment extends CustomFontPreferenceFragmen
         List<String> domainList = new ArrayList<>(domains);
 
         if (domainList.isEmpty()) {
-            Toast.makeText(activity, R.string.no_external_browser_domains, Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, R.string.no_external_browser_domains, Toast.LENGTH_SHORT).show();
             return;
         }
 
         boolean[] checkedItems = new boolean[domainList.size()];
-        new AlertDialog.Builder(activity)
+        new AlertDialog.Builder(mActivity)
                 .setTitle(R.string.external_browser_domains_dialog_title)
                 .setMultiChoiceItems(domainList.toArray(new String[0]), checkedItems,
                         (dialog, which, isChecked) -> {
@@ -123,7 +123,7 @@ public class MiscellaneousPreferenceFragment extends CustomFontPreferenceFragmen
                             ExternalBrowserDomainUtils.removeDomain(sharedPreferences, domainList.get(i));
                         }
                     }
-                    Toast.makeText(activity, R.string.domains_removed, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, R.string.domains_removed, Toast.LENGTH_SHORT).show();
                 })
                 .show();
     }
