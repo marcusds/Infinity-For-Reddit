@@ -49,6 +49,7 @@ public class WebViewActivity extends BaseActivity {
     @Inject
     CustomThemeWrapper mCustomThemeWrapper;
     private String url;
+    private String originalUrl;
     private ActivityWebViewBinding binding;
 
     @Override
@@ -105,6 +106,7 @@ public class WebViewActivity extends BaseActivity {
         binding.webViewWebViewActivity.getSettings().setDomStorageEnabled(true);
 
         url = getIntent().getDataString();
+        originalUrl = url;  // Store original URL before any redirects
         if (savedInstanceState == null) {
             binding.toolbarWebViewActivity.setTitle(url);
             binding.webViewWebViewActivity.loadUrl(url);
@@ -207,7 +209,7 @@ public class WebViewActivity extends BaseActivity {
                 Toast.makeText(this, R.string.no_activity_found_for_external_browser, Toast.LENGTH_SHORT).show();
             }
         } else if (item.getItemId() == R.id.action_always_open_domain_external_web_view_activity) {
-            Uri uri = Uri.parse(url);
+            Uri uri = Uri.parse(originalUrl);  // Use original URL to get the correct domain
             String domain = uri.getAuthority();
             if (domain != null && !domain.isEmpty()) {
                 ExternalBrowserDomainUtils.addDomain(mSharedPreferences, domain);
