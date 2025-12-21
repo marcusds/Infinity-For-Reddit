@@ -126,6 +126,7 @@
     <string name="no_subreddits">No subreddits found</string>
     <string name="no_users">No users found</string>
     <string name="no_multi_reddits">No Multireddits found</string>
+    <string name="no_bookmarks">No bookmarked subreddits</string>
     <string name="no_storage_permission">No storage permission to save this file</string>
 
     <string name="load_comments_failed">Error loading comments.\nTap to retry.</string>
@@ -164,10 +165,13 @@
 
     <string name="subscribe">Subscribe</string>
     <string name="unsubscribe">Unsubscribe</string>
-    <string name="subscribed">Subscribed</string>"
+    <string name="subscribed">Subscribed</string>
     <string name="subscribe_failed">Subscribe Failed</string>
-    <string name="unsubscribed">Unsubscribed</string>"
+    <string name="unsubscribed">Unsubscribed</string>
     <string name="unsubscribe_failed">Unsubscribe Failed</string>
+    <string name="bookmarked">Bookmarked</string>
+    <string name="bookmark_removed">Bookmark Removed</string>
+    <string name="bookmark_failed">Bookmark Failed</string>
 
     <string name="follow">Follow</string>
     <string name="unfollow">Unfollow</string>
@@ -235,6 +239,7 @@
     <string name="subreddits">Subreddits</string>
     <string name="users">Users</string>
     <string name="multi_reddits">MultiReddits</string>
+    <string name="bookmarks">Bookmarks</string>
     <string name="posts">Posts</string>
     <string name="comments">Comments</string>
     <string name="about">About</string>
