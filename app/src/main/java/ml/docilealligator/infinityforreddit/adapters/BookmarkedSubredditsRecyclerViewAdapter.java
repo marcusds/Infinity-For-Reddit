@@ -80,7 +80,7 @@ public class BookmarkedSubredditsRecyclerViewAdapter extends RecyclerView.Adapte
             }
 
             // Show bookmark icon (filled) since these are bookmarked items
-            ((BookmarkedSubredditViewHolder) viewHolder).binding.favoriteImageViewItemSubscribedThing.setImageResource(R.drawable.ic_bookmark_24dp);
+            ((BookmarkedSubredditViewHolder) viewHolder).binding.favoriteImageViewItemSubscribedThing.setImageResource(R.drawable.ic_bookmark_day_night_24dp);
             ((BookmarkedSubredditViewHolder) viewHolder).binding.favoriteImageViewItemSubscribedThing.setColorFilter(primaryTextColor);
 
             // Remove bookmark when clicked
@@ -118,8 +118,9 @@ public class BookmarkedSubredditsRecyclerViewAdapter extends RecyclerView.Adapte
         return mBookmarkedSubredditData == null ? 0 : mBookmarkedSubredditData.size();
     }
 
+    @NonNull
     @Override
-    public String getPopupText(int position) {
+    public String getPopupText(@NonNull View view, int position) {
         if (mBookmarkedSubredditData != null && position >= 0 && position < mBookmarkedSubredditData.size()) {
             String name = mBookmarkedSubredditData.get(position).getName();
             if (name != null && !name.isEmpty()) {
