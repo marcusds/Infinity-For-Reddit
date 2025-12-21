@@ -186,6 +186,7 @@ public class ViewSubredditDetailActivity extends BaseActivity implements SortTyp
     //private int mNCurrentOnlineSubscribers = 0;
     private boolean isNsfwSubreddit = false;
     private boolean subscriptionReady = false;
+    private boolean bookmarkReady = false;
     private boolean showToast = false;
     private boolean hideFab;
     private boolean showBottomAppBar;
@@ -1155,6 +1156,65 @@ public class ViewSubredditDetailActivity extends BaseActivity implements SortTyp
                         subscriptionReady = true;
                     }
                 });
+
+        // Check if subreddit is bookmarked and set up bookmark button
+        mExecutor.execute(() -> {
+            ml.docilealligator.infinityforreddit.bookmarkedsubreddit.BookmarkedSubredditData bookmarkedSubreddit =
+                    mRedditDataRoomDatabase.bookmarkedSubredditDao().getBookmarkedSubreddit(subredditName, accountName);
+
+            runOnUiThread(() -> {
+                if (bookmarkedSubreddit != null) {
+                    binding.bookmarkSubredditChipViewSubredditDetailActivity.setChipIcon(getDrawable(R.drawable.ic_bookmark_day_night_24dp));
+                } else {
+                    binding.bookmarkSubredditChipViewSubredditDetailActivity.setChipIcon(getDrawable(R.drawable.ic_bookmark_border_day_night_24dp));
+                }
+                bookmarkReady = true;
+            });
+        });
+
+        binding.bookmarkSubredditChipViewSubredditDetailActivity.setOnClickListener(view -> {
+            if (bookmarkReady) {
+                bookmarkReady = false;
+                mExecutor.execute(() -> {
+                    ml.docilealligator.infinityforreddit.bookmarkedsubreddit.BookmarkedSubredditData existingBookmark =
+                            mRedditDataRoomDatabase.bookmarkedSubredditDao().getBookmarkedSubreddit(subredditName, accountName);
+
+                    if (existingBookmark != null) {
+                        // Remove bookmark
+                        mRedditDataRoomDatabase.bookmarkedSubredditDao().deleteBookmarkedSubreddit(subredditName, accountName);
+                        runOnUiThread(() -> {
+                            binding.bookmarkSubredditChipViewSubredditDetailActivity.setChipIcon(getDrawable(R.drawable.ic_bookmark_border_day_night_24dp));
+                            makeSnackbar(R.string.bookmark_removed, false);
+                            bookmarkReady = true;
+                        });
+                    } else {
+                        // Add bookmark - need to get subreddit data first
+                        ml.docilealligator.infinityforreddit.subreddit.SubredditData subredditData =
+                                mRedditDataRoomDatabase.subredditDao().getSubredditData(subredditName);
+
+                        if (subredditData != null) {
+                            ml.docilealligator.infinityforreddit.bookmarkedsubreddit.BookmarkedSubredditData newBookmark =
+                                    new ml.docilealligator.infinityforreddit.bookmarkedsubreddit.BookmarkedSubredditData(
+                                            subredditData.getId(),
+                                            subredditData.getName(),
+                                            subredditData.getIconUrl(),
+                                            accountName);
+                            mRedditDataRoomDatabase.bookmarkedSubredditDao().insert(newBookmark);
+                            runOnUiThread(() -> {
+                                binding.bookmarkSubredditChipViewSubredditDetailActivity.setChipIcon(getDrawable(R.drawable.ic_bookmark_day_night_24dp));
+                                makeSnackbar(R.string.bookmarked, false);
+                                bookmarkReady = true;
+                            });
+                        } else {
+                            runOnUiThread(() -> {
+                                makeSnackbar(R.string.bookmark_failed, false);
+                                bookmarkReady = true;
+                            });
+                        }
+                    }
+                });
+            }
+        });
 
         binding.viewPagerViewSubredditDetailActivity.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
