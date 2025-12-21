@@ -58,6 +58,7 @@ import ml.docilealligator.infinityforreddit.databinding.ActivitySubscribedThingL
 import ml.docilealligator.infinityforreddit.events.GoBackToMainPageEvent;
 import ml.docilealligator.infinityforreddit.events.RefreshMultiRedditsEvent;
 import ml.docilealligator.infinityforreddit.events.SwitchAccountEvent;
+import ml.docilealligator.infinityforreddit.fragments.BookmarkedSubredditsListingFragment;
 import ml.docilealligator.infinityforreddit.fragments.FollowedUsersListingFragment;
 import ml.docilealligator.infinityforreddit.fragments.FragmentCommunicator;
 import ml.docilealligator.infinityforreddit.fragments.MultiRedditListingFragment;
@@ -555,6 +556,8 @@ public class SubscribedThingListingActivity extends BaseActivity implements Acti
         private FollowedUsersListingFragment followedUsersListingFragment;
         @Nullable
         private MultiRedditListingFragment multiRedditListingFragment;
+        @Nullable
+        private BookmarkedSubredditsListingFragment bookmarkedSubredditsListingFragment;
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
@@ -587,8 +590,10 @@ public class SubscribedThingListingActivity extends BaseActivity implements Acti
                     return getSubscribedSubredditListingFragment();
                 case 1:
                     return getFollowedUserFragment();
-                default:
+                case 2:
                     return getMultiRedditListingFragment();
+                default:
+                    return getBookmarkedSubredditsFragment();
             }
         }
 
@@ -622,6 +627,11 @@ public class SubscribedThingListingActivity extends BaseActivity implements Acti
             return fragment;
         }
 
+        @NonNull
+        private Fragment getBookmarkedSubredditsFragment() {
+            return new BookmarkedSubredditsListingFragment();
+        }
+
         @Override
         public int getCount() {
             if (isThingSelectionMode) {
@@ -634,7 +644,7 @@ public class SubscribedThingListingActivity extends BaseActivity implements Acti
                         return 1;
                 }
             }
-            return 3;
+            return 4;
         }
 
         @Override
@@ -665,6 +675,8 @@ public class SubscribedThingListingActivity extends BaseActivity implements Acti
                     return Utils.getTabTextWithCustomFont(typeface, getString(R.string.users));
                 case 2:
                     return Utils.getTabTextWithCustomFont(typeface, getString(R.string.multi_reddits));
+                case 3:
+                    return Utils.getTabTextWithCustomFont(typeface, getString(R.string.bookmarks));
             }
 
             return null;
@@ -680,6 +692,8 @@ public class SubscribedThingListingActivity extends BaseActivity implements Acti
                 followedUsersListingFragment = (FollowedUsersListingFragment) fragment;
             } else if (fragment instanceof MultiRedditListingFragment) {
                 multiRedditListingFragment = (MultiRedditListingFragment) fragment;
+            } else if (fragment instanceof BookmarkedSubredditsListingFragment) {
+                bookmarkedSubredditsListingFragment = (BookmarkedSubredditsListingFragment) fragment;
             }
 
             return fragment;
