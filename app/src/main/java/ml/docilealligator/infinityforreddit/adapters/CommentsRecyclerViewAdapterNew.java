@@ -437,6 +437,10 @@ public class CommentsRecyclerViewAdapterNew extends ListAdapter<Comment, Recycle
                                     comment.setAuthorIconUrl(iconUrl);
                                 }
 
+                                int currentPosition = holder.getBindingAdapterPosition();
+                                if (currentPosition == RecyclerView.NO_POSITION) {
+                                    return;
+                                }
                                 Comment currentComment = getItem(currentPosition);
                                 if (currentComment != null && authorFullName.equals(currentComment.getAuthorFullName())) {
                                     mGlide.load(iconUrl)
@@ -584,7 +588,11 @@ public class CommentsRecyclerViewAdapterNew extends ListAdapter<Comment, Recycle
                                     comment.setAuthorIconUrl(iconUrl);
                                 }
 
-                                Comment currentComment = getItem(holder.getBindingAdapterPosition());
+                                int currentPosition = holder.getBindingAdapterPosition();
+                                if (currentPosition == RecyclerView.NO_POSITION) {
+                                    return;
+                                }
+                                Comment currentComment = getItem(currentPosition);
                                 if (currentComment != null && authorFullName.equals(currentComment.getAuthorFullName())) {
                                     mGlide.load(iconUrl)
                                             .apply(RequestOptions.bitmapTransform(new RoundedCornersTransformation(72, 0)))
