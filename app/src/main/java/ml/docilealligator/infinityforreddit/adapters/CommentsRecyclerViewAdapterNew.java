@@ -437,10 +437,6 @@ public class CommentsRecyclerViewAdapterNew extends ListAdapter<Comment, Recycle
                                     comment.setAuthorIconUrl(iconUrl);
                                 }
 
-                                int currentPosition = holder.getBindingAdapterPosition();
-                                if (currentPosition == RecyclerView.NO_POSITION) {
-                                    return;
-                                }
                                 Comment currentComment = getItem(currentPosition);
                                 if (currentComment != null && authorFullName.equals(currentComment.getAuthorFullName())) {
                                     mGlide.load(iconUrl)
