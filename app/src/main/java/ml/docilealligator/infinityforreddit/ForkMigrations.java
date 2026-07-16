@@ -40,4 +40,18 @@ public class ForkMigrations {
             database.execSQL("CREATE INDEX IF NOT EXISTS index_bookmarked_subreddits_username ON bookmarked_subreddits(username)");
         }
     };
+
+    // Devices that were already on schema version 33 from an earlier build of this fork
+    // committed MIGRATION_33_34 without ever running upstream's MIGRATION_32_33, which
+    // creates the reminders table, and were left stuck at version 34 with no such table.
+    public static final Migration MIGRATION_34_35 = new Migration(34, 35) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("CREATE TABLE IF NOT EXISTS reminders" +
+                    "(username TEXT, post_id TEXT NOT NULL, comment_id TEXT NOT NULL, content TEXT NOT NULL, " +
+                    "created_at INTEGER DEFAULT 0 NOT NULL, reminder_time INTEGER DEFAULT 0 NOT NULL, " +
+                    "PRIMARY KEY(post_id, comment_id, reminder_time), " +
+                    "FOREIGN KEY(username) REFERENCES accounts(username) ON DELETE SET NULL)");
+        }
+    };
 }
