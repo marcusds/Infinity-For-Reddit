@@ -71,4 +71,10 @@
         app:title="@string/settings_embedded_media_type_title"
         app:useSimpleSummaryProvider="true" />
 
+    <ml.docilealligator.infinityforreddit.customviews.preference.CustomFontEditTextPreference
+        app:key="force_comment_sort_new_titles"
+        app:title="@string/settings_force_comment_sort_new_titles_title"
+        app:summary="@string/settings_force_comment_sort_new_titles_summary"
+        app:useSimpleSummaryProvider="false" />
+
 </PreferenceScreen>

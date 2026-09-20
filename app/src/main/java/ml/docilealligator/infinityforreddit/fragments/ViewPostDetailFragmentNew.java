@@ -55,6 +55,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -471,6 +472,7 @@ public class ViewPostDetailFragmentNew extends Fragment implements FragmentCommu
                         mActivity.accountName, mPost, postId, singleCommentId, comments, children,
                         sortType, mSortTypeSharedPreferences, mPostHistorySharedPreferences,
                         mSharedPreferences.getBoolean(SharedPreferencesUtils.RESPECT_SUBREDDIT_RECOMMENDED_COMMENT_SORT_TYPE, false),
+                        parseForceSortNewTitleKeywords(),
                         mPostHistorySharedPreferences.getBoolean(mActivity.accountName + SharedPreferencesUtils.MARK_POSTS_AS_READ_BASE, false),
                         !mSharedPreferences.getBoolean(SharedPreferencesUtils.SHOW_TOP_LEVEL_COMMENTS_FIRST, false),
                         getArguments().getString(EXTRA_CONTEXT_NUMBER, "8")
@@ -571,7 +573,8 @@ public class ViewPostDetailFragmentNew extends Fragment implements FragmentCommu
                 SortType.Type sortType = uiState.getSortType();
                 mActivity.setTitle(sortType.fullName);
 
-                if (mSharedPreferences.getBoolean(SharedPreferencesUtils.SAVE_SORT_TYPE, true)) {
+                if (!uiState.isSortTypeForced()
+                        && mSharedPreferences.getBoolean(SharedPreferencesUtils.SAVE_SORT_TYPE, true)) {
                     mSortTypeSharedPreferences.edit().putString(SharedPreferencesUtils.SORT_TYPE_POST_COMMENT, sortType.name()).apply();
                 }
             }
@@ -854,6 +857,26 @@ public class ViewPostDetailFragmentNew extends Fragment implements FragmentCommu
 
     public void editComment(String commentContentMarkdown, int position) {
         viewPostDetailFragmentViewModel.editComment(commentContentMarkdown, position);
+    }
+
+    /**
+     * The comma separated title keywords that force a thread to be sorted by new. Blank entries
+     * are dropped so a stray comma cannot match every post.
+     */
+    private List<String> parseForceSortNewTitleKeywords() {
+        String keywords = mSharedPreferences.getString(
+                SharedPreferencesUtils.FORCE_COMMENT_SORT_NEW_TITLES, "");
+        if (keywords == null || keywords.trim().isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<String> parsed = new ArrayList<>();
+        for (String keyword : keywords.split(",")) {
+            String trimmed = keyword.trim();
+            if (!trimmed.isEmpty()) {
+                parsed.add(trimmed);
+            }
+        }
+        return parsed;
     }
 
     public void changeSortType(SortType sortType) {

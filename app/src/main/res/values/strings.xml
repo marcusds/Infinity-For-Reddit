@@ -420,6 +420,8 @@
     <string name="settings_link_handler_title">Link Handler</string>
     <string name="settings_rewrite_twitter_links_title">Rewrite Twitter/X Links</string>
     <string name="settings_rewrite_twitter_links_summary">Rewrite x.com/twitter.com links to a Nitter mirror</string>
+    <string name="settings_force_comment_sort_new_titles_title">Always sort by new</string>
+    <string name="settings_force_comment_sort_new_titles_summary">Comma separated title keywords. Comments on posts whose title contains one are always sorted by new, e.g. "game thread, live thread"</string>
     <string name="settings_nitter_instance_url_title">Nitter mirror</string>
     <string name="settings_nitter_instance_url_summary">Which Nitter instance x.com/twitter.com links are rewritten to</string>
     <string name="settings_manage_external_browser_domains_title">Manage External Browser Domains</string>

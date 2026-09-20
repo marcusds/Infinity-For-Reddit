@@ -74,6 +74,7 @@ class ViewPostDetailFragmentViewModelNew(
     private val sortTypeSharedPreferences: SharedPreferences,
     private val postHistorySharedPreferences: SharedPreferences,
     private var respectSubredditRecommendedSortType: Boolean,
+    private val forceSortNewTitleKeywords: List<String>,
     private val markPostsAsRead: Boolean,
     private val expandChildren: Boolean,
     private val contextNumber: String
@@ -88,7 +89,9 @@ class ViewPostDetailFragmentViewModelNew(
         val loadMoreChildrenSuccess: Boolean,
         //val shouldShowErrorView: Boolean,
         val errorViewError: ViewPostDetailFragmentViewModelError?,
-        val singleCommentId: String?
+        val singleCommentId: String?,
+        /** True when the sort was forced by a title rule, so it must not become the default. */
+        val isSortTypeForced: Boolean = false
     )
 
     data class DataState(
@@ -445,7 +448,11 @@ class ViewPostDetailFragmentViewModelNew(
 
                             commentFilter = fetchCommentFilter(post.subredditName)
 
-                            if (respectSubredditRecommendedSortType) {
+                            if (shouldForceSortByNew(post.title)) {
+                                _uiState.value = _uiState.value.copy(isSortTypeForced = true)
+                                updateSortType(SortType.Type.NEW)
+                                fetchComments(SortType.Type.NEW, false)
+                            } else if (respectSubredditRecommendedSortType) {
                                 fetchCommentsRespectRecommendedSortSync(false)
                             } else {
                                 val parseCommentsResult = parseComments(response.body(), commentFilter!!, expandChildren)
@@ -1083,6 +1090,19 @@ class ViewPostDetailFragmentViewModelNew(
                 ParsePost.parseBasicData(data)
             }
         }
+    }
+
+    /**
+     * Some threads are only useful newest first, and which ones is a property of the title
+     * rather than the subreddit: "game thread", "live thread" and so on. A post whose title
+     * contains one of the user's keywords is sorted by new no matter what the default or the
+     * subreddit's recommended sort says.
+     */
+    private fun shouldForceSortByNew(title: String?): Boolean {
+        if (title.isNullOrEmpty() || forceSortNewTitleKeywords.isEmpty()) {
+            return false
+        }
+        return forceSortNewTitleKeywords.any { title.contains(it, ignoreCase = true) }
     }
 
     private fun loadSortType(): SortType.Type {
@@ -2418,6 +2438,7 @@ class ViewPostDetailFragmentViewModelNew(
                            sortType: SortType.Type?, sortTypeSharedPreferences: SharedPreferences,
                            postHistorySharedPreferences: SharedPreferences,
                            respectSubredditRecommendedSortType: Boolean,
+                           forceSortNewTitleKeywords: List<String>,
                            markPostsAsRead: Boolean,
                            expandChildren: Boolean, contextNumber: String) : ViewModelProvider.Factory {
             return object: ViewModelProvider.Factory {
@@ -2431,7 +2452,7 @@ class ViewPostDetailFragmentViewModelNew(
                         post, postId, commentId, comments, children,
                         sortType, sortTypeSharedPreferences,
                         postHistorySharedPreferences, respectSubredditRecommendedSortType,
-                        markPostsAsRead, expandChildren, contextNumber
+                        forceSortNewTitleKeywords, markPostsAsRead, expandChildren, contextNumber
                     ) as T
                 }
             }
