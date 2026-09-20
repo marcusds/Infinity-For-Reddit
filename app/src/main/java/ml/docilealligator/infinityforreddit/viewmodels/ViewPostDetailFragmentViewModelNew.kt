@@ -195,10 +195,27 @@ class ViewPostDetailFragmentViewModelNew(
         changeRefreshState: Boolean
     ) {
         viewModelScope.launch {
+            // A title rule outranks both the saved sort and the subreddit's recommended sort.
+            // Only on an initial load or a refresh: the overload taking an explicit sort type
+            // is the user picking one by hand, which must always win.
+            if (forceSortByNewIfTitleMatches(changeRefreshState)) {
+                return@launch
+            }
             fetchCommentsRespectRecommendedSortSync(
                 _uiState.value.sortType ?: updateSortType(loadSortType()), changeRefreshState,
             )
         }
+    }
+
+    /** Returns true when the thread was forced to new and the comments are already loading. */
+    private suspend fun forceSortByNewIfTitleMatches(changeRefreshState: Boolean): Boolean {
+        if (!shouldForceSortByNew(_dataState.value.post?.title)) {
+            return false
+        }
+        _uiState.value = _uiState.value.copy(isSortTypeForced = true)
+        updateSortType(SortType.Type.NEW)
+        fetchComments(SortType.Type.NEW, changeRefreshState)
+        return true
     }
 
     fun fetchCommentsRespectRecommendedSort(
@@ -448,10 +465,8 @@ class ViewPostDetailFragmentViewModelNew(
 
                             commentFilter = fetchCommentFilter(post.subredditName)
 
-                            if (shouldForceSortByNew(post.title)) {
-                                _uiState.value = _uiState.value.copy(isSortTypeForced = true)
-                                updateSortType(SortType.Type.NEW)
-                                fetchComments(SortType.Type.NEW, false)
+                            if (forceSortByNewIfTitleMatches(false)) {
+                                // already loading with the forced sort
                             } else if (respectSubredditRecommendedSortType) {
                                 fetchCommentsRespectRecommendedSortSync(false)
                             } else {
