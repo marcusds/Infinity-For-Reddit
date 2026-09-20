@@ -1265,6 +1265,11 @@ public class ViewPostDetailFragmentNew extends Fragment implements FragmentCommu
         recyclerView.getLayoutManager().startSmoothScroll(mSmoothScroller);
     }
 
+    @Nullable
+    public Post getPost() {
+        return mPost;
+    }
+
     public void scrollToPreviousParentComment() {
         RecyclerView recyclerView = mCommentsRecyclerView == null ? binding.postDetailRecyclerViewViewPostDetailFragment : mCommentsRecyclerView;
         LinearLayoutManagerBugFixed layoutManager = ((LinearLayoutManagerBugFixed) recyclerView.getLayoutManager());

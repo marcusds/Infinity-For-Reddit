@@ -1801,4 +1801,22 @@
     <string name="mute">Mute</string>
     <string name="unmute">Unmute</string>
     <string name="remove_from_approved_users">Remove from approved users</string>
+    <string name="comment_bubble_activity_label">Thread</string>
+    <string name="open_in_chat_bubble">Open in chat bubble</string>
+    <string name="comment_bubble_title">u/%1$s in %2$s</string>
+    <string name="comment_bubble_reply_hint">Reply to this thread</string>
+    <string name="comment_bubble_not_found">This bubbled thread no longer exists</string>
+    <string name="comment_bubble_no_account">Log in again to reply from this bubble</string>
+    <string name="comment_bubble_reply_failed">Could not send this reply</string>
+    <string name="comment_bubble_opened">Thread opened in a chat bubble</string>
+    <string name="open_comments_in_chat_bubble">Open comments in chat bubble</string>
+    <string name="comment_bubble_enable_bubbles">Bubbled. Allow bubbles for this app in notification settings to make it pop out.</string>
+    <string name="comment_bubble_refresh">Refresh</string>
+    <string name="comment_bubble_thread_depth">Thread · %1$d level(s) deep</string>
+
+    <string name="send">Send</string>
+    <plurals name="comment_bubble_replies">
+        <item quantity="one">%1$d reply ›</item>
+        <item quantity="other">%1$d replies ›</item>
+    </plurals>
 </resources>

@@ -27,6 +27,7 @@ fun ThemedTopAppBar(
     scrollBehavior: TopAppBarScrollBehavior? = null,
     windowInsetsController: WindowInsetsControllerCompat,
     actions: @Composable RowScope.() -> Unit = {},
+    showNavigationIcon: Boolean = true,
     onBack: () -> Unit
 ) {
     val customTheme = LocalAppTheme.current
@@ -59,10 +60,12 @@ fun ThemedTopAppBar(
             )
         },
         navigationIcon = {
-            IconButton(onClick = onBack) {
-                ToolbarIcon(
-                    contentDescription = stringResource(R.string.action_back_content_description)
-                )
+            if (showNavigationIcon) {
+                IconButton(onClick = onBack) {
+                    ToolbarIcon(
+                        contentDescription = stringResource(R.string.action_back_content_description)
+                    )
+                }
             }
         },
         actions = actions,
