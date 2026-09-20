@@ -112,23 +112,44 @@ public class LinkResolverActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * The Nitter mirror to rewrite Twitter/X links to, normalised so the user can type either
+     * "nitter.net" or "https://nitter.net/".
+     */
+    private String getNitterInstanceUrl() {
+        String instance = mSharedPreferences.getString(
+                SharedPreferencesUtils.NITTER_INSTANCE_URL,
+                SharedPreferencesUtils.NITTER_INSTANCE_URL_DEFAULT);
+        if (instance == null || instance.trim().isEmpty()) {
+            instance = SharedPreferencesUtils.NITTER_INSTANCE_URL_DEFAULT;
+        }
+        instance = instance.trim();
+        if (!instance.startsWith("http://") && !instance.startsWith("https://")) {
+            instance = "https://" + instance;
+        }
+        while (instance.endsWith("/")) {
+            instance = instance.substring(0, instance.length() - 1);
+        }
+        return instance;
+    }
+
     private void handleUri(Uri uri) {
         if (uri == null) {
             Toast.makeText(this, R.string.no_link_available, Toast.LENGTH_SHORT).show();
         } else {
-            // Rewrite Twitter/X links to nitter.net if enabled
+            // Rewrite Twitter/X links to the configured Nitter mirror if enabled
             boolean rewriteTwitterLinks = mSharedPreferences.getBoolean(
                     SharedPreferencesUtils.REWRITE_TWITTER_LINKS, false);
             if (rewriteTwitterLinks) {
                 String authority = uri.getAuthority();
                 if (authority != null && (authority.equals("x.com") || authority.equals("www.x.com") ||
                         authority.equals("twitter.com") || authority.equals("www.twitter.com"))) {
-                    // Build nitter.net URL with the same path and query
+                    // Build the mirror URL with the same path and query
                     String path = uri.getPath();
                     String query = uri.getQuery();
                     String fragment = uri.getFragment();
 
-                    StringBuilder nitterUrl = new StringBuilder("https://nitter.net");
+                    StringBuilder nitterUrl = new StringBuilder(getNitterInstanceUrl());
                     if (path != null && !path.isEmpty()) {
                         nitterUrl.append(path);
                     }
