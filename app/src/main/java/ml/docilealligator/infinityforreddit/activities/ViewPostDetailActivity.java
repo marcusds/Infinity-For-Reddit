@@ -56,6 +56,8 @@ import ml.docilealligator.infinityforreddit.R;
 import ml.docilealligator.infinityforreddit.RedditDataRoomDatabase;
 import ml.docilealligator.infinityforreddit.account.Account;
 import ml.docilealligator.infinityforreddit.asynctasks.AccountManagement;
+import ml.docilealligator.infinityforreddit.bubble.BubbleThread;
+import ml.docilealligator.infinityforreddit.bubble.CommentBubbleManager;
 import ml.docilealligator.infinityforreddit.comment.Comment;
 import ml.docilealligator.infinityforreddit.customtheme.CustomThemeWrapper;
 import ml.docilealligator.infinityforreddit.databinding.ActivityViewPostDetailBinding;
@@ -111,6 +113,8 @@ public class ViewPostDetailActivity extends BaseActivity implements SortTypeSele
     SharedPreferences mPostDetailsSharedPreferences;
     @Inject
     CustomThemeWrapper mCustomThemeWrapper;
+    @Inject
+    CommentBubbleManager mCommentBubbleManager;
     @Inject
     Executor mExecutor;
     @Inject
@@ -644,6 +648,8 @@ public class ViewPostDetailActivity extends BaseActivity implements SortTypeSele
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.view_post_detail_activity, menu);
+        menu.findItem(R.id.action_open_in_chat_bubble_view_post_detail_activity)
+                .setVisible(CommentBubbleManager.bubblesSupported());
         applyMenuItemTheme(menu);
         return true;
     }
@@ -662,8 +668,33 @@ public class ViewPostDetailActivity extends BaseActivity implements SortTypeSele
         } else if (item.getItemId() == R.id.action_previous_parent_comment_view_post_detail_activity) {
             scrollToPreviousParentComment();
             return true;
+        } else if (item.getItemId() == R.id.action_open_in_chat_bubble_view_post_detail_activity) {
+            openCommentsInChatBubble();
+            return true;
         }
         return false;
+    }
+
+    private void openCommentsInChatBubble() {
+        ViewPostDetailFragmentNew fragment = mSectionsPagerAdapter == null
+                ? null : mSectionsPagerAdapter.getCurrentFragment();
+        Post post = fragment == null ? null : fragment.getPost();
+        String postId = post == null ? getIntent().getStringExtra(EXTRA_POST_ID) : post.getId();
+        if (postId == null) {
+            Toast.makeText(this, R.string.comment_bubble_not_found, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String title = post == null ? postId : post.getTitle();
+        String subredditName = post == null ? "" : post.getSubredditName();
+        mCommentBubbleManager.openBubble(
+                new BubbleThread(accountName, postId, "", title, subredditName,
+                        post == null ? null : post.getSubredditIconUrl()),
+                "r/" + subredditName, title);
+        Toast.makeText(this,
+                CommentBubbleManager.bubblesAllowed(this)
+                        ? R.string.comment_bubble_opened
+                        : R.string.comment_bubble_enable_bubbles,
+                Toast.LENGTH_LONG).show();
     }
 
     @Override

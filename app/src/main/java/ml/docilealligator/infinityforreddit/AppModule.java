@@ -25,6 +25,7 @@ import javax.inject.Singleton;
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
+import ml.docilealligator.infinityforreddit.bubble.CommentBubbleManager;
 import ml.docilealligator.infinityforreddit.customtheme.CustomThemeWrapper;
 import ml.docilealligator.infinityforreddit.customviews.LoopAvailableExoCreator;
 import ml.docilealligator.infinityforreddit.managers.VideoMuteManager;
@@ -276,6 +277,25 @@ abstract class AppModule {
                 redditDataRoomDatabase,
                 (AlarmManager) application.getSystemService(Context.ALARM_SERVICE),
                 customThemeWrapper
+        );
+    }
+
+    @Provides
+    @Singleton
+    static CommentBubbleManager provideCommentBubbleManager(
+            Application application, RedditDataRoomDatabase redditDataRoomDatabase,
+            CustomThemeWrapper customThemeWrapper, Executor executor,
+            @Named("no_oauth") Retrofit retrofit, @Named("oauth") Retrofit oauthRetrofit,
+            @Named("current_account") SharedPreferences currentAccountSharedPreferences
+    ) {
+        return new CommentBubbleManager(
+                application,
+                redditDataRoomDatabase,
+                customThemeWrapper,
+                executor,
+                retrofit,
+                oauthRetrofit,
+                currentAccountSharedPreferences
         );
     }
 }

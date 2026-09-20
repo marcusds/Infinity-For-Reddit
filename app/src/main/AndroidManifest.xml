@@ -38,6 +38,15 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:label">
         <activity
+            android:name=".activities.CommentBubbleActivity"
+            android:allowEmbedded="true"
+            android:documentLaunchMode="always"
+            android:exported="true"
+            android:label="@string/comment_bubble_activity_label"
+            android:resizeableActivity="true"
+            android:theme="@style/AppTheme.ComposeActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
             android:name=".activities.NewFeaturesActivity"
             android:exported="false"
             android:parentActivityName=".activities.MainActivity"

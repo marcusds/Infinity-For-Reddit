@@ -18,6 +18,9 @@ import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
+import ml.docilealligator.infinityforreddit.Infinity;
 import ml.docilealligator.infinityforreddit.R;
 import ml.docilealligator.infinityforreddit.account.Account;
 import ml.docilealligator.infinityforreddit.activities.BaseActivity;
@@ -28,6 +31,8 @@ import ml.docilealligator.infinityforreddit.activities.ReportActivity;
 import ml.docilealligator.infinityforreddit.activities.SetReminderActivity;
 import ml.docilealligator.infinityforreddit.activities.ViewPostDetailActivity;
 import ml.docilealligator.infinityforreddit.activities.ViewUserDetailActivity;
+import ml.docilealligator.infinityforreddit.bubble.BubbleThread;
+import ml.docilealligator.infinityforreddit.bubble.CommentBubbleManager;
 import ml.docilealligator.infinityforreddit.comment.Comment;
 import ml.docilealligator.infinityforreddit.customviews.LandscapeExpandedRoundedBottomSheetDialogFragment;
 import ml.docilealligator.infinityforreddit.databinding.FragmentCommentMoreBottomSheetBinding;
@@ -48,6 +53,8 @@ public class CommentMoreBottomSheetFragment extends LandscapeExpandedRoundedBott
     public static final String EXTRA_IS_NSFW = "EIN";
 
     private BaseActivity activity;
+    @Inject
+    CommentBubbleManager commentBubbleManager;
 
     public CommentMoreBottomSheetFragment() {
         // Required empty public constructor
@@ -145,6 +152,24 @@ public class CommentMoreBottomSheetFragment extends LandscapeExpandedRoundedBott
                     dismiss();
                 });
             }
+        }
+
+        if (CommentBubbleManager.bubblesSupported()) {
+            binding.openInChatBubbleCommentMoreBottomSheetFragment.setVisibility(View.VISIBLE);
+            binding.openInChatBubbleCommentMoreBottomSheetFragment.setOnClickListener(view -> {
+                commentBubbleManager.openBubble(
+                        new BubbleThread(activity.accountName, comment.getLinkId(), comment.getId(),
+                                getString(R.string.comment_bubble_title, comment.getAuthor(),
+                                        "r/" + comment.getSubredditName()),
+                                comment.getSubredditName(), null),
+                        comment.getAuthor(), comment.getCommentRawText());
+                Toast.makeText(activity,
+                        CommentBubbleManager.bubblesAllowed(activity)
+                                ? R.string.comment_bubble_opened
+                                : R.string.comment_bubble_enable_bubbles,
+                        Toast.LENGTH_LONG).show();
+                dismiss();
+            });
         }
 
         binding.saveTextViewCommentMoreBottomSheetFragment.setVisibility(View.VISIBLE);
@@ -259,5 +284,6 @@ public class CommentMoreBottomSheetFragment extends LandscapeExpandedRoundedBott
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         activity = (BaseActivity) context;
+        ((Infinity) context.getApplicationContext()).getAppComponent().inject(this);
     }
 }

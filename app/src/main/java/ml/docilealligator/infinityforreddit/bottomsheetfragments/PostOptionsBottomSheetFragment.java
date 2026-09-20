@@ -38,6 +38,8 @@ import ml.docilealligator.infinityforreddit.databinding.FragmentPostOptionsBotto
 import ml.docilealligator.infinityforreddit.events.PostUpdateEventToPostDetailFragment;
 import ml.docilealligator.infinityforreddit.events.PostUpdateEventToPostList;
 import ml.docilealligator.infinityforreddit.post.HidePost;
+import ml.docilealligator.infinityforreddit.bubble.BubbleThread;
+import ml.docilealligator.infinityforreddit.bubble.CommentBubbleManager;
 import ml.docilealligator.infinityforreddit.post.Post;
 import ml.docilealligator.infinityforreddit.readpost.ReadPostModification;
 import ml.docilealligator.infinityforreddit.readpost.ReadPostType;
@@ -72,6 +74,8 @@ public class PostOptionsBottomSheetFragment extends LandscapeExpandedRoundedBott
     @Inject
     @Named("post_history")
     SharedPreferences mPostHistorySharedPreferences;
+    @Inject
+    CommentBubbleManager mCommentBubbleManager;
 
     public PostOptionsBottomSheetFragment() {
         // Required empty public constructor
@@ -249,6 +253,23 @@ public class PostOptionsBottomSheetFragment extends LandscapeExpandedRoundedBott
 
                 dismiss();
             });
+
+            if (CommentBubbleManager.bubblesSupported()) {
+                binding.openInChatBubbleTextViewPostOptionsBottomSheetFragment.setVisibility(View.VISIBLE);
+                binding.openInChatBubbleTextViewPostOptionsBottomSheetFragment.setOnClickListener(view -> {
+                    mCommentBubbleManager.openBubble(
+                            new BubbleThread(mBaseActivity.accountName, mPost.getId(), "",
+                                    mPost.getTitle(), mPost.getSubredditName(),
+                                    mPost.getSubredditIconUrl()),
+                            "r/" + mPost.getSubredditName(), mPost.getTitle());
+                    Toast.makeText(mBaseActivity,
+                            CommentBubbleManager.bubblesAllowed(mBaseActivity)
+                                    ? R.string.comment_bubble_opened
+                                    : R.string.comment_bubble_enable_bubbles,
+                            Toast.LENGTH_LONG).show();
+                    dismiss();
+                });
+            }
 
             if (mBaseActivity.accountName.equals(Account.ANONYMOUS_ACCOUNT)) {
                 binding.commentTextViewPostOptionsBottomSheetFragment.setVisibility(View.GONE);

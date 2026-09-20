@@ -20,6 +20,8 @@ public class NotificationUtils {
     public static final String CHANNEL_DOWNLOAD_IMAGE = "Download Image";
     public static final String CHANNEL_ID_DOWNLOAD_GIF = "download_gif";
     public static final String CHANNEL_DOWNLOAD_GIF = "Download Gif";
+    public static final String CHANNEL_ID_COMMENT_BUBBLES = "comment_bubbles";
+    public static final String CHANNEL_COMMENT_BUBBLES = "Comment Bubbles";
     public static final String CHANNEL_ID_MATERIAL_YOU = "material_you";
     public static final String CHANNEL_MATERIAL_YOU = "Material You";
     public static final int SUBMIT_POST_SERVICE_NOTIFICATION_ID = 10000;
@@ -30,6 +32,7 @@ public class NotificationUtils {
     public static final int MATERIAL_YOU_NOTIFICATION_ID = 60000;
     public static final int EDIT_PROFILE_SERVICE_NOTIFICATION_ID = 70000;
     public static final int REMINDER_NOTIFICATION_ID = 80000;
+    public static final int COMMENT_BUBBLE_NOTIFICATION_ID_BASE = 90000;
 
     private static final int SUMMARY_BASE_ID_UNREAD_MESSAGE = 0;
     private static final int NOTIFICATION_BASE_ID_UNREAD_MESSAGE = 1;
