@@ -419,7 +419,9 @@
     <string name="settings_save_front_page_scrolled_position_summary">Browse new posts after refreshing in HOME (Front Page, sort type: Best)</string>
     <string name="settings_link_handler_title">Link Handler</string>
     <string name="settings_rewrite_twitter_links_title">Rewrite Twitter/X Links</string>
-    <string name="settings_rewrite_twitter_links_summary">Rewrite x.com/twitter.com links to nitter.net</string>
+    <string name="settings_rewrite_twitter_links_summary">Rewrite x.com/twitter.com links to a Nitter mirror</string>
+    <string name="settings_nitter_instance_url_title">Nitter mirror</string>
+    <string name="settings_nitter_instance_url_summary">Which Nitter instance x.com/twitter.com links are rewritten to</string>
     <string name="settings_manage_external_browser_domains_title">Manage External Browser Domains</string>
     <string name="settings_manage_external_browser_domains_summary">View and remove domains that always open in external browser</string>
     <string name="settigns_video_title">Video</string>
