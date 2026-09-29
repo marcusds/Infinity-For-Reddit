@@ -1,10 +1,14 @@
 package ml.docilealligator.infinityforreddit.settings;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.browser.customtabs.CustomTabsService;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
@@ -49,6 +53,19 @@ public class MiscellaneousPreferenceFragment extends CustomFontPreferenceFragmen
         ListPreference languageListPreference = findPreference(SharedPreferencesUtils.LANGUAGE);
         EditTextPreference postFeedMaxResolution = findPreference(SharedPreferencesUtils.POST_FEED_MAX_RESOLUTION);
         Preference manageExternalBrowserDomainsPreference = findPreference("manage_external_browser_domains");
+        ListPreference linkHandlerListPreference = findPreference(SharedPreferencesUtils.LINK_HANDLER);
+        ListPreference customTabBrowserListPreference = findPreference(SharedPreferencesUtils.CUSTOM_TAB_BROWSER_PACKAGE);
+
+        if (customTabBrowserListPreference != null) {
+            populateCustomTabBrowsers(customTabBrowserListPreference);
+            if (linkHandlerListPreference != null) {
+                customTabBrowserListPreference.setVisible("1".equals(linkHandlerListPreference.getValue()));
+                linkHandlerListPreference.setOnPreferenceChangeListener((preference, newValue) -> {
+                    customTabBrowserListPreference.setVisible("1".equals(newValue));
+                    return true;
+                });
+            }
+        }
 
         if (mainPageBackButtonActionListPreference != null) {
             mainPageBackButtonActionListPreference.setOnPreferenceChangeListener((preference, newValue) -> {
@@ -96,6 +113,35 @@ public class MiscellaneousPreferenceFragment extends CustomFontPreferenceFragmen
                 showManageExternalBrowserDomainsDialog();
                 return true;
             });
+        }
+    }
+
+    private void populateCustomTabBrowsers(ListPreference preference) {
+        PackageManager pm = mActivity.getPackageManager();
+        List<ResolveInfo> services = pm.queryIntentServices(
+                new Intent(CustomTabsService.ACTION_CUSTOM_TABS_CONNECTION), 0);
+        List<CharSequence> entries = new ArrayList<>();
+        List<CharSequence> values = new ArrayList<>();
+        entries.add(getString(R.string.settings_custom_tab_browser_default));
+        values.add("");
+        for (ResolveInfo info : services) {
+            String packageName = info.serviceInfo.packageName;
+            if (values.contains(packageName)) {
+                continue;
+            }
+            CharSequence label;
+            try {
+                label = pm.getApplicationLabel(pm.getApplicationInfo(packageName, 0));
+            } catch (PackageManager.NameNotFoundException e) {
+                label = packageName;
+            }
+            entries.add(label);
+            values.add(packageName);
+        }
+        preference.setEntries(entries.toArray(new CharSequence[0]));
+        preference.setEntryValues(values.toArray(new CharSequence[0]));
+        if (!values.contains(preference.getValue())) {
+            preference.setValue("");
         }
     }
 

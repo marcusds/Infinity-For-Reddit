@@ -16,6 +16,12 @@
         app:title="@string/settings_link_handler_title"
         app:useSimpleSummaryProvider="true" />
 
+    <ml.docilealligator.infinityforreddit.customviews.preference.CustomFontListPreference
+        app:defaultValue=""
+        app:key="custom_tab_browser_package"
+        app:title="@string/settings_custom_tab_browser_title"
+        app:useSimpleSummaryProvider="true" />
+
     <ml.docilealligator.infinityforreddit.customviews.preference.CustomFontSwitchPreference
         app:defaultValue="false"
         app:key="rewrite_twitter_links"

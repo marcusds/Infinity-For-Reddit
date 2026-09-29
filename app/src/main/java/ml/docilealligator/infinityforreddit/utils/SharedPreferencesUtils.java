@@ -104,6 +104,7 @@ public class SharedPreferencesUtils {
     public static final String VOLUME_KEYS_NAVIGATE_POSTS = "volume_keys_navigate_posts";
     public static final String MUTE_VIDEO = "mute_video";
     public static final String LINK_HANDLER = "link_handler";
+    public static final String CUSTOM_TAB_BROWSER_PACKAGE = "custom_tab_browser_package";
     public static final String REWRITE_TWITTER_LINKS = "rewrite_twitter_links";
     public static final String NITTER_INSTANCE_URL = "nitter_instance_url";
     public static final String NITTER_INSTANCE_URL_DEFAULT = "https://nitter.net";

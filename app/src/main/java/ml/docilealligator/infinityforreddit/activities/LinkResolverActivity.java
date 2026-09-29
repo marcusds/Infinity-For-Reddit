@@ -527,7 +527,15 @@ public class LinkResolverActivity extends AppCompatActivity {
                             .setToolbarColor(mCustomThemeWrapper.getColorPrimary())
                             .build());
             CustomTabsIntent customTabsIntent = builder.build();
-            customTabsIntent.intent.setPackage(resolveInfos.get(0).activityInfo.packageName);
+            String packageName = resolveInfos.get(0).activityInfo.packageName;
+            String preferredPackage = mSharedPreferences.getString(SharedPreferencesUtils.CUSTOM_TAB_BROWSER_PACKAGE, "");
+            for (ResolveInfo info : resolveInfos) {
+                if (info.activityInfo.packageName.equals(preferredPackage)) {
+                    packageName = preferredPackage;
+                    break;
+                }
+            }
+            customTabsIntent.intent.setPackage(packageName);
             if (uri.getScheme() == null) {
                 uri = Uri.parse("http://" + uri);
             }
